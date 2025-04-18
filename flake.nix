@@ -1,25 +1,21 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";   # or a commit hash
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
   
   outputs = { self, nixpkgs }:
   let
-    eachSystem = nixpkgs.lib.genAttrs [ "x86_64-linux" ];
+    system = "x86_64-linux";
     pkgs   = import nixpkgs {
       inherit system;
-      config.allowUnfree = true;   # built‑in → no env var or --impure needed
+      config.allowUnfree = true;
     };
   in {
-    packages = eachSystem (sys: {
-      crealityprint = (pkgs sys).callPackage ./crealityprint.nix { };
-    });
-    defaultPackage = eachSystem (sys: self.packages.${sys}.crealityprint);
-    apps = eachSystem (sys: {
-      crealityprint = {
-        type = "app";
-        program = "${self.packages.${sys}.crealityprint}/bin/crealityprint";
-      };
-    });
-    defaultApp = eachSystem (sys: self.apps.${sys}.crealityprint);
+    packages.${system}.crealityprint = pkgs.callPackage ./crealityprint.nix { };
+  
+    defaultPackage.${system} = self.packages.${system}.crealityprint;
+    apps.${system}.crealityprint = {
+      type = "app";
+      program = "${self.packages.${system}.crealityprint}/bin/CrealityPrint";
+    };
+    defaultApp.${system} = self.apps.${system}.crealityprint;
   };
 }
-
