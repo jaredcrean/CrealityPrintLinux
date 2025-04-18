@@ -4,6 +4,8 @@
   appimageTools,
   makeDesktopItem,
 }:
+# CrealityPrint packaged with AppImage helpers
+# ============================================
 let
   pname = "crealityprint";
   version = "6.1.0-beta";
@@ -13,15 +15,13 @@ let
     sha256 = "sha256-54oR0pnpUjkHKc3FBjFeUvpU4VeTxd6guJH1cOLV5lw=";
   };
 
-  extracted = appimageTools.extractType2 {
-    inherit pname version src;
-  };
+  extracted = appimageTools.extractType2 {inherit pname version src;};
 
   desktopItem = makeDesktopItem {
     name = pname;
     exec = pname;
     desktopName = "CrealityPrint";
-    comment = "3‑D Printer slicer by Creality";
+    comment = "3‑D printer slicer by Creality";
     icon = "CrealityPrint"; # matches upstream filename
     categories = ["Graphics" "3DGraphics" "Engineering"];
   };
@@ -50,11 +50,14 @@ in
       ];
 
     extraInstallCommands = ''
+      # Desktop entry
       install -Dm644 ${desktopItem}/share/applications/${pname}.desktop \
         $out/share/applications/${pname}.desktop
 
+      # Copy whatever icons the AppImage ships
       if [ -d ${extracted}/usr/share/icons/hicolor ]; then
-        cp -r --no-preserve=mode,ownership ${extracted}/usr/share/icons/hicolor \
+        cp -r --no-preserve=mode,ownership \
+          ${extracted}/usr/share/icons/hicolor \
           $out/share/icons/
       fi
     '';

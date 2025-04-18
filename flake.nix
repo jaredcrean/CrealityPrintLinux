@@ -1,21 +1,33 @@
 {
+  description = "CrealityPrint AppImage packaged for Nix";
+
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
-  
+
   outputs = { self, nixpkgs }:
   let
-    system = "x86_64-linux";
-    pkgs   = import nixpkgs {
+    eachSystem = nixpkgs.lib.genAttrs [ "x86_64-linux" ];
+    pkgsFor = system: import nixpkgs {
       inherit system;
-      config.allowUnfree = true;
+      config.allowUnfree = true;   # <- users need no env‑var or --impure
     };
-  in {
-    packages.${system}.crealityprint = pkgs.callPackage ./crealityprint.nix { };
-  
-    defaultPackage.${system} = self.packages.${system}.crealityprint;
-    apps.${system}.crealityprint = {
-      type = "app";
-      program = "${self.packages.${system}.crealityprint}/bin/CrealityPrint";
-    };
-    defaultApp.${system} = self.apps.${system}.crealityprint;
+  in
+  {
+    packages = eachSystem (sys: {
+      crealityprint = (pkgsFor sys).callPackage ./crealityprint.nix { };
+    });
+
+    defaultPackage = eachSystem (sys: self.packages.${sys}.crealityprint);
+
+    apps = eachSystem (sys: {
+      crealityprint = {
+        type = "app";
+        program =
+          "${self.packages.${sys}.crealityprint}/bin/CrealityPrint";
+      };
+    });
+
+    defaultApp = eachSystem (sys: self.apps.${sys}.crealityprint);
+
   };
 }
+
