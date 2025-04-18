@@ -4,13 +4,13 @@
   outputs = { self, nixpkgs }:
   let
     eachSystem = nixpkgs.lib.genAttrs [ "x86_64-linux" ];
-    pkgsFor = system: import nixpkgs {
+    pkgs   = import nixpkgs {
       inherit system;
-      config.allowUnfree = true;
+      config.allowUnfree = true;   # built‑in → no env var or --impure needed
     };
   in {
     packages = eachSystem (sys: {
-      crealityprint = (pkgsFor sys).callPackage ./crealityprint.nix { };
+      crealityprint = (pkgs sys).callPackage ./crealityprint.nix { };
     });
     defaultPackage = eachSystem (sys: self.packages.${sys}.crealityprint);
     apps = eachSystem (sys: {
