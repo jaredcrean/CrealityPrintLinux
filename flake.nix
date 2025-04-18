@@ -1,25 +1,24 @@
-{
-  description = "CrealityPrint AppImage package";
+# flake.nix
+inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";   # or a commit hash
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05"; 
-
-  outputs = { self, nixpkgs }: let
-    system = "x86_64-linux";
-    pkgs   = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-    };
-  in {
-    packages.${system}.crealityprint =
-      pkgs.callPackage ./crealityprint.nix { };
-
-    defaultPackage.${system} = self.packages.${system}.crealityprint;
-
-    apps.${system}.crealityprint = {
-      type = "app";
-      program = "${self.packages.${system}.crealityprint}/bin/crealityprint";
-    };
-    defaultApp.${system} = self.apps.${system}.crealityprint;
+outputs = { self, nixpkgs }:
+let
+  eachSystem = nixpkgs.lib.genAttrs [ "x86_64-linux" ];
+  pkgsFor = system: import nixpkgs {
+    inherit system;
+    config.allowUnfree = true;
   };
-}
+in {
+  packages = eachSystem (sys: {
+    crealityprint = (pkgsFor sys).callPackage ./crealityprint.nix { };
+  });
+  defaultPackage = eachSystem (sys: self.packages.${sys}.crealityprint);
+  apps = eachSystem (sys: {
+    crealityprint = {
+      type = "app";
+      program = "${self.packages.${sys}.crealityprint}/bin/crealityprint";
+    };
+  });
+  defaultApp = eachSystem (sys: self.apps.${sys}.crealityprint);
+};
 
