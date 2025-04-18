@@ -30,7 +30,7 @@ appimageTools.wrapType2 {
   extraPkgs = pkgs: with pkgs; [
     zlib glib gtk3 pango cairo gdk-pixbuf libsecret mesa
     xorg.libX11 xorg.libxcb xorg.libXrandr xorg.libXi libxkbcommon wayland
-    ffmpeg
+    ffmpeg webkitgtk_4_1 glib-networking
   ];
 
   extraInstallCommands = ''
