@@ -46,7 +46,7 @@ in
         libxkbcommon
         wayland
         ffmpeg
-        webkitgtk_4_0
+        webkitgtk_4_1
       ];
 
     extraInstallCommands = ''
