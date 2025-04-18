@@ -4,8 +4,6 @@
   appimageTools,
   makeDesktopItem,
 }:
-# CrealityPrint packaged with AppImage helpers
-# ============================================
 let
   pname = "crealityprint";
   version = "6.1.0-beta";
@@ -46,7 +44,7 @@ in
         libxkbcommon
         wayland
         ffmpeg
-        webkitgtk_4_0
+        webkitgtk_4_1
       ];
 
     extraInstallCommands = ''
