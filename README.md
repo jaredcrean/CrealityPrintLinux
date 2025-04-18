@@ -1,7 +1,9 @@
-# NIXOS CrealityPrint 6
+### Quick start
 
-# Build it
-nix build "https://github.com/jaredcrean/CrealityPrintLinux"
+```bash
+# one‑shot run
+NIXPKGS_ALLOW_UNFREE=1 nix run github:jaredcrean/CrealityPrintLinux
 
-# …or run it (opens CrealityPrint)
-nix run "https://github.com/jaredcrean/CrealityPrintLinux"
+# or build into ./result
+NIXPKGS_ALLOW_UNFREE=1 nix build github:jaredcrean/CrealityPrintLinux
+```
