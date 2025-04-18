@@ -23,7 +23,7 @@
     apps = eachSystem (sys: {
       crealityprint = {
         type = "app";
-        program = "${self.packages.${sys}.crealityprint}/bin/CrealityPrint";
+        program = "${self.packages.${sys}.crealityprint}/bin/crealityprint";
       };
     });
 
